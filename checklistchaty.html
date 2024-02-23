@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checklist de Progreso</title>
+<style>
+  /* Estilos opcionales para hacerlo más atractivo */
+  .category {
+    margin-bottom: 20px;
+  }
+  .category h1 {
+    font-size: 24px;
+  }
+
+  .category h2 {
+    font-size: 18px;
+  }
+  .category h1, .category h2 {
+    margin-bottom: 5px;
+  }
+  .task {
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+  }
+  .task input[type="checkbox"] {
+    margin-right: 10px;
+  }
+  .mandatory {
+    color: black;
+  }
+  .optional {
+    color: #888; /* Color gris menos marcado */
+  }
+  .checked {
+    text-decoration: line-through;
+  }
+  .description {
+    display: none;
+    margin-top: 5px;
+  }
+  .show-more {
+    color: blue;
+    cursor: pointer;
+  }
+
+  /* Ajuste para mostrar las categorías en tres columnas en pantallas grandes */
+  @media screen and (min-width: 768px) {
+    #categories {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>
+</head>
+<body>
+<div id="categories">
+  <div class="category" id="category1">
+    <h1>Socios</h1>
+    <h2>/members</h2>
+    <div class="task mandatory"><input type="checkbox" id="members.post">Agregar Nuevo</div>
+    <div class="task mandatory"><input type="checkbox" id="members.get.list">Listado</div>
+    <div class="task mandatory"><input type="checkbox" id="members.get.id">Detalle</div>
+    <div class="task optional"><input type="checkbox" id="members.put.id">Editar</div>
+    <div class="task optional"><input type="checkbox" id="members.delete.id">Borrar</div>
+    <div class="description">
+      <p>Descripción detallada sobre los socios...</p>
+    </div>
+    <a class="show-more">Mostrar más</a>
+  </div>
+  <div class="category" id="category2">
+    <h1>Elementos del Archivo</h1>
+    <h2>/items</h2>
+    <div class="task mandatory"><input type="checkbox" id="items.post">Agregar Nuevo</div>
+    <div class="task mandatory"><input type="checkbox" id="items.get.list">Listado</div>
+    <div class="task mandatory"><input type="checkbox" id="items.get.id">Detalle</div>
+    <div class="task optional"><input type="checkbox" id="items.put.id">Editar</div>
+    <div class="task optional"><input type="checkbox" id="items.delete.id">Borrar</div>
+    <div class="description">
+      <p>Descripción detallada sobre los elementos del archivo...</p>
+    </div>
+    <a class="show-more">Mostrar más</a>
+
+    <h1>Copias</h1>
+    <h2>/copies</h2>
+    <div class="task mandatory"><input type="checkbox" id="items.post">Añadir Copia de Elemento</div>
+    <div class="task mandatory"><input type="checkbox" id="items.get.list">Ver Copias de un Elemento</div>
+    <div class="task mandatory"><input type="checkbox" id="items.get.id">Borrar</div>
+  </div>
+  <div class="category" id="category3">
+    <h1>Préstamos</h1>
+    <h2>/loans</h2>
+    <div class="task mandatory"><input type="checkbox" id="loans.post">Generar Nuevo</div>
+    <div class="task mandatory"><input type="checkbox" id="loans.get.list">Listado</div>
+    <div class="task mandatory"><input type="checkbox" id="loans.put.list">Devolución</div>
+    <div class="description">
+      <p>Descripción detallada sobre los préstamos...</p>
+    </div>
+    <a class="show-more">Mostrar más</a>
+  </div>
+  <!-- Agrega más categorías y tareas según sea necesario -->
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+  const showMoreLinks = document.querySelectorAll('.show-more');
+
+  checkboxes.forEach(function(checkbox) {
+    // Asigna un evento change a cada checkbox
+    checkbox.addEventListener('change', function() {
+      const isChecked = this.checked;
+      const id = this.id;
+
+      // Guarda el estado del checkbox en localStorage
+      localStorage.setItem(id, isChecked);
+
+      // Tacha el texto de la tarea si está marcada como hecha
+      if (isChecked) {
+        this.parentNode.classList.add('checked');
+      } else {
+        this.parentNode.classList.remove('checked');
+      }
+    });
+
+    // Restaura el estado de los checkboxes desde localStorage al cargar la página
+    const storedValue = localStorage.getItem(checkbox.id);
+    if (storedValue !== null) {
+      checkbox.checked = (storedValue === "true");
+      // Aplica el estilo de tachado si la tarea está marcada como hecha
+      if (checkbox.checked) {
+        checkbox.parentNode.classList.add('checked');
+      }
+    }
+  });
+
+  // Agregar funcionalidad de mostrar/ocultar descripción
+  showMoreLinks.forEach(function(link) {
+    link.addEventListener('click', function() {
+      const description = this.parentNode.querySelector('.description');
+      description.style.display = description.style.display === 'none' ? 'block' : 'none';
+    });
+  });
+});
+</script>
+</body>
+</html>
