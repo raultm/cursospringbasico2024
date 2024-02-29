@@ -43,26 +43,26 @@ public class ItemsController {
         return repository.findAll(); 
     }
     
-    @GetMapping("{peticionId}") @Operation(operationId = "encontrarItem",summary = "Obtener un Item por su Id", tags = { "items" })
-    public Item findBy(@PathVariable("peticionId") Long peticionId) { 
-            return repository.findById(peticionId).orElseThrow(); 
+    @GetMapping("{itemId}") @Operation(operationId = "encontrarItem",summary = "Obtener un Item por su Id", tags = { "items" })
+    public Item findBy(@PathVariable("itemId") Long itemId) { 
+            return repository.findById(itemId).orElseThrow(); 
     }
 
-    @PostMapping("{peticionId}/copies")
+    @PostMapping("{itemId}/copies")
     @Operation(operationId = "crearCopia",summary = "Crear Copia de Item Id", tags = { "items" })
-    public Copy crearCopia(@PathVariable("peticionId") Long peticionId) {
+    public Copy crearCopia(@PathVariable("itemId") Long itemId) {
         return copiesRepository.save(Copy.builder()
-            .item(repository.findById(peticionId).orElseThrow())
+            .item(repository.findById(itemId).orElseThrow())
             .acquiredAt(new Date())
             .reservedBy("")
             .build()
         );
     }
 
-    @GetMapping("{peticionId}/copies")
+    @GetMapping("{itemId}/copies")
     @Operation(operationId = "listarCopiasDeItem",summary = "Listar las copias de un Item", tags = { "items" })
-    public List<Copy> listarCopias(@PathVariable("peticionId") Long peticionId) {
-        return repository.findById(peticionId).orElseThrow().getCopies();
+    public List<Copy> listarCopias(@PathVariable("itemId") Long itemId) {
+        return repository.findById(itemId).orElseThrow().getCopies();
     }
     
     
