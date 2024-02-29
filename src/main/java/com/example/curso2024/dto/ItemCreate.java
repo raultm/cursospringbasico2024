@@ -16,6 +16,7 @@ public class ItemCreate {
     private String title;
     private String author;
     private String type;
+    private String image;
     private float duration;
     private int minimumAge;
     private Date releasedAt;
@@ -25,6 +26,7 @@ public class ItemCreate {
             .title(title)
             .author(author)
             .type(type)
+            .image(image)
             .duration(duration)
             .minimumAge(minimumAge)
             .releasedAt(releasedAt)
