@@ -8,7 +8,7 @@ import lombok.Data;
 public class LoanCreate {
     
     @JsonProperty("copy_id")
-    private Long copyId;
+    private Long copyId = 24L;
     
     @JsonProperty("member_id")
     private Long memberId;
