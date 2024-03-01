@@ -1,9 +1,9 @@
 package com.example.curso2024.controllers;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +15,8 @@ import com.example.curso2024.models.Copy;
 import com.example.curso2024.models.Item;
 import com.example.curso2024.repositories.CopiesRepository;
 import com.example.curso2024.repositories.ItemsRepository;
+import com.example.curso2024.services.copies.SaveCopyService;
+import com.example.curso2024.services.items.SaveItemService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -32,10 +34,12 @@ public class ItemsController {
     @Autowired ItemsRepository repository;
     @Autowired CopiesRepository copiesRepository;
 
-    
+    @Autowired SaveItemService saveItemService;
+    @Autowired SaveCopyService saveCopyService;
+
     @PostMapping @Operation(operationId = "crearItem",summary = "Crear nuevo Item", tags = { "items" })
-    public Item save(@RequestBody @Valid ItemCreate item) { 
-        return repository.save(item.toItem()); 
+    public ResponseEntity<Item> save(@RequestBody @Valid ItemCreate item) { 
+        return saveItemService.response(item);
     }
     
     @GetMapping  @Operation(operationId = "listarItems",summary = "Listar todos los Items", tags = { "items" })
@@ -50,13 +54,8 @@ public class ItemsController {
 
     @PostMapping("{itemId}/copies")
     @Operation(operationId = "crearCopia",summary = "Crear Copia de Item Id", tags = { "items" })
-    public Copy crearCopia(@PathVariable("itemId") Long itemId) {
-        return copiesRepository.save(Copy.builder()
-            .item(repository.findById(itemId).orElseThrow())
-            .acquiredAt(new Date())
-            .reservedBy("")
-            .build()
-        );
+    public ResponseEntity<Copy> crearCopia(@PathVariable("itemId") Long itemId) {
+        return saveCopyService.response(itemId);
     }
 
     @GetMapping("{itemId}/copies")

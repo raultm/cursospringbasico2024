@@ -32,7 +32,7 @@
 	</appender>
 
 	<logger name="org.springframework.web.method.HandlerMethod">
-		<level value="TRACE" />
+		<level value="ERROR" />
 	</logger>
 
 

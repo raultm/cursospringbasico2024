@@ -20,6 +20,8 @@ public class ItemCreate {
     private float duration;
     private int minimumAge;
     private Date releasedAt;
+    @Builder.Default
+    private int copies = 1;
 
     public Item toItem(){
         return Item.builder()
