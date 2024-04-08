@@ -1,7 +1,6 @@
 package com.example.curso2024.dto;
 
-import java.util.Date;
-
+import java.time.LocalDate;
 import com.example.curso2024.models.Item;
 
 import jakarta.validation.constraints.NotNull;
@@ -19,7 +18,7 @@ public class ItemCreate {
     private String image;
     private float duration;
     private int minimumAge;
-    private Date releasedAt;
+    private LocalDate releasedAt;
     @Builder.Default
     private int copies = 1;
 

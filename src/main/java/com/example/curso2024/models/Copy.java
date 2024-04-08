@@ -1,6 +1,7 @@
 package com.example.curso2024.models;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -10,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
@@ -34,9 +36,24 @@ public class Copy {
     private Item item;
 
     @Column(name="acquired_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date acquiredAt;
+    @Temporal(TemporalType.DATE)
+    private LocalDate acquiredAt;
 
     @Column(name="reserved_by")
     private String reservedBy;
+
+    @OneToMany(mappedBy = "copy")
+    private List<Loan> loans;
+
+    public boolean isNew() {
+        return acquiredAt.isAfter(LocalDate.now().minusDays(15));
+    }
+
+    public boolean isBorrowed() {
+        return false;
+    }
+
+    public int getRecommendedAge() {
+        return getItem().getMinimumAge();
+    }
 }

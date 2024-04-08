@@ -1,7 +1,7 @@
 package com.example.curso2024.models;
 
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -45,7 +45,7 @@ public class Item {
     private int minimumAge;
     @Column(name="released_at")
     @Temporal(TemporalType.DATE)
-    private Date releasedAt;
+    private LocalDate releasedAt;
 
     @OneToMany(mappedBy = "item", fetch = FetchType.EAGER)
     @JsonIgnore

@@ -1,7 +1,6 @@
 package com.example.curso2024.services.copies;
 
-import java.util.Date;
-
+import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,7 @@ public class SaveCopyService {
     public Copy execute(Long itemId){
         return copiesRepository.save(Copy.builder()
             .item(itemsRepository.findById(itemId).orElseThrow())
-            .acquiredAt(new Date())
+            .acquiredAt(LocalDate.now())
             .reservedBy("")
             .build()
         );

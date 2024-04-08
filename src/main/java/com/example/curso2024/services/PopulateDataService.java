@@ -1,19 +1,14 @@
 package com.example.curso2024.services;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.curso2024.dto.ItemCreate;
 import com.example.curso2024.dto.MemberCreate;
 import com.example.curso2024.models.Item;
-import com.example.curso2024.models.Member;
 import com.example.curso2024.repositories.ItemsRepository;
 import com.example.curso2024.repositories.MemberRepository;
 import com.example.curso2024.services.items.SaveItemService;
@@ -33,14 +28,15 @@ public class PopulateDataService {
         populateMembers();
     }
 
-    private static final Date str2Date(String dateString){
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-M-dd", Locale.ENGLISH);
-        try {
-            return formatter.parse(dateString);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return new Date();
+    private static final LocalDate str2Date(String dateString){
+        return LocalDate.parse(dateString);
+        // SimpleDateFormat formatter = new SimpleDateFormat("yyyy-M-dd", Locale.ENGLISH);
+        // try {
+        //     return formatter.parse(dateString);
+        // } catch (ParseException e) {
+        //     e.printStackTrace();
+        // }
+        // return new Date();
     }
 
     private void populateItems(){
