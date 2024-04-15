@@ -56,4 +56,12 @@ public class Copy {
     public int getRecommendedAge() {
         return getItem().getMinimumAge();
     }
+
+    public int getDuration(){
+        return getItem().getDuration();
+    }
+
+    public String getType(){
+        return getItem().getType();
+    }
 }

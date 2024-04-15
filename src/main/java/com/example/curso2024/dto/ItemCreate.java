@@ -16,7 +16,7 @@ public class ItemCreate {
     private String author;
     private String type;
     private String image;
-    private float duration;
+    private int duration;
     private int minimumAge;
     private LocalDate releasedAt;
     @Builder.Default

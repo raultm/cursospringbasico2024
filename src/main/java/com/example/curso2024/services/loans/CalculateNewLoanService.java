@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import org.springframework.stereotype.Service;
 
 import com.example.curso2024.models.Copy;
+import com.example.curso2024.models.Item;
 import com.example.curso2024.models.Loan;
 import com.example.curso2024.models.Member;
 
@@ -21,9 +22,19 @@ public class CalculateNewLoanService {
                         || copy.getReservedBy().equals(member.getUsername())){
                         if(copy.isNew()){
                             loanDays = 14;
+                            if(copy.getType() != null && copy.getType().equals(Item.LIBRO) && copy.getDuration()>900){
+                                loanDays+= 7;
+                            }
                         }else{
-                            if(member.isPremium()){
-                                loanDays = 35;
+                            if(copy.getType() != null && copy.getType().equals(Item.DISCO)){
+                                loanDays = 7;
+                                if(member.isPremium()){
+                                    loanDays = 14;
+                                }
+                            }else{
+                                if(member.isPremium()){
+                                    loanDays = 35;
+                                }
                             }
                         }
                         return Loan.builder()
