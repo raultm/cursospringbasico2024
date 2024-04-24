@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.example.curso2024.models.Copy;
+import com.example.curso2024.models.Item;
 import com.example.curso2024.models.Loan;
 import com.example.curso2024.models.Member;
 
@@ -113,5 +114,38 @@ class CalculateNewLoanServiceTest {
       Mockito.doReturn("demo").when(member).getUsername();
 
       assertDoesNotThrow(() -> { calculateNewLoanService.execute(member, copy, dateString); });
+    }
+
+    @Test
+    void unPrestamosSeIncrementaEnUnaSemanaDeLoHabitualSiEsUnLibroEsNovedadYLongitudMayorDe900(){
+      Mockito.doReturn(Item.LIBRO).when(copy).getType();
+      Mockito.doReturn(true).when(copy).isNew();
+      Mockito.doReturn(901).when(copy).getDuration();
+      String dateString = "2024-04-01";
+
+      Loan loan = calculateNewLoanService.execute(member, copy, dateString);
+
+      assertEquals("2024-04-22", loan.getExpiredAt().toString());
+    }
+
+    @Test
+    void unPrestamosDeUnDiscoSoloEsPorUnaSemana(){
+      Mockito.doReturn(Item.DISCO).when(copy).getType();
+      String dateString = "2024-04-01";
+
+      Loan loan = calculateNewLoanService.execute(member, copy, dateString);
+
+      assertEquals("2024-04-08", loan.getExpiredAt().toString());
+    }
+
+    @Test
+    void unPrestamosDeUnDiscoEsDeDosSemanasSiElUsuarioEsPremium(){
+      Mockito.doReturn(true).when(member).isPremium();
+      Mockito.doReturn(Item.DISCO).when(copy).getType();
+      String dateString = "2024-04-01";
+
+      Loan loan = calculateNewLoanService.execute(member, copy, dateString);
+
+      assertEquals("2024-04-15", loan.getExpiredAt().toString());
     }
 }

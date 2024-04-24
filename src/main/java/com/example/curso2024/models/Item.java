@@ -40,7 +40,7 @@ public class Item {
     private String title;
     private String author;
     private String image;
-    private float duration;
+    private int duration;
     @Column(name="minimum_age")
     private int minimumAge;
     @Column(name="released_at")
