@@ -3,8 +3,12 @@ package com.example.curso2024.services.loans;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -14,15 +18,20 @@ import com.example.curso2024.models.Loan;
 import com.example.curso2024.models.Member;
 
 
-@SpringBootTest
 class CalculateNewLoanServiceTest {
     
-    @Autowired CalculateNewLoanService calculateNewLoanService;
+    CalculateNewLoanService calculateNewLoanService;
 
-    @MockBean Member member;
-    @MockBean Copy copy;
+    @Mock Member member;
+    @Mock Copy copy;
 
     String dateString = "2024-01-01";
+
+    @BeforeEach
+    public void init() {
+        MockitoAnnotations.openMocks(this);
+        calculateNewLoanService = new CalculateNewLoanService();
+    }
 
     @Test
     void unPrestamoLePoneFechaDeDevolucionATresSemanas(){
