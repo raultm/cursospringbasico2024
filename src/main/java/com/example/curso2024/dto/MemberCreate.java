@@ -13,10 +13,11 @@ public class MemberCreate {
     
     private String username;
     private String email;
+    private String perfil;
     private LocalDate birthDate;
     
     
     public Member toMember() {
-        return Member.builder().username(username).email(email).birthDate(birthDate).build();
+        return Member.builder().username(username).email(email).birthDate(birthDate).perfil(perfil).build();
     }
 }

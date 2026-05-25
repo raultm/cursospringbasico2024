@@ -31,6 +31,7 @@ public class Member {
 
     private String username;
     private String email;
+    private String perfil;
     private boolean premium;
     private LocalDate birthDate;
     
@@ -52,11 +53,11 @@ public class Member {
         return prestamos().stream().anyMatch(prestamo -> prestamo.getReturnedAt() == null && prestamo.getExpiredAt().isBefore(today));
     }
 
-    public boolean isVisitante(){ return false; }
+    public boolean isVisitante(){ return perfil.equals("visitante"); }
 
-    public boolean isEstudiante(){ return false; }
+    public boolean isEstudiante(){ return perfil.equals("estudiante"); }
     
-    public boolean isProfesor(){ return false; }
+    public boolean isProfesor(){ return perfil.equals("profesor"); }
 
     public Integer getAge() {
          if (getBirthDate() == null) {
