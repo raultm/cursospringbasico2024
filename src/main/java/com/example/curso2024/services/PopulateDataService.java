@@ -75,16 +75,16 @@ public class PopulateDataService {
     );
 
     private static final List<MemberCreate> members = Arrays.asList(
-        MemberCreate.builder().username("maria.garcia").email("maria.garcia@fakemail.com").build(),
-        MemberCreate.builder().username("carlos.martinez").email("carlos.martinez@fakemail.com").build(),
-        MemberCreate.builder().username("laura.lopez").email("laura.lopez@fakemail.com").build(),
-        MemberCreate.builder().username("javier.sanchez").email("javier.sanchez@fakemail.com").build(),
-        MemberCreate.builder().username("ana.fernandez").email("ana.fernandez@fakemail.com").build(),
-        MemberCreate.builder().username("david.gonzalez").email("david.gonzalez@fakemail.com").build(),
-        MemberCreate.builder().username("sofia.rodriguez").email("sofia.rodriguez@fakemail.com").build(),
-        MemberCreate.builder().username("pablo.perez").email("pablo.perez@fakemail.com").build(),
-        MemberCreate.builder().username("isabel.diaz").email("isabel.diaz@fakemail.com").build(),
-        MemberCreate.builder().username("juan.martin").email("juan.martin@fakemail.com").build()
+        MemberCreate.builder().username("maria.garcia").email("maria.garcia@fakemail.com").birthDate(LocalDate.of(2009, 5, 14)).build(),
+        MemberCreate.builder().username("carlos.martinez").email("carlos.martinez@fakemail.com").birthDate(LocalDate.of(2008, 11, 2)).build(),
+        MemberCreate.builder().username("laura.lopez").email("laura.lopez@fakemail.com").birthDate(LocalDate.of(2007, 3, 28)).build(),
+        MemberCreate.builder().username("javier.sanchez").email("javier.sanchez@fakemail.com").birthDate(LocalDate.of(1999, 7, 19)).build(),
+        MemberCreate.builder().username("ana.fernandez").email("ana.fernandez@fakemail.com").birthDate(LocalDate.of(1995, 1, 10)).build(),
+        MemberCreate.builder().username("david.gonzalez").email("david.gonzalez@fakemail.com").birthDate(LocalDate.of(1988, 9, 5)) .build(),
+        MemberCreate.builder().username("sofia.rodriguez").email("sofia.rodriguez@fakemail.com").birthDate(LocalDate.of(1982, 12, 22)).build(),
+        MemberCreate.builder().username("pablo.perez").email("pablo.perez@fakemail.com").birthDate(LocalDate.of(1978, 4, 3)) .build(),
+        MemberCreate.builder().username("isabel.diaz").email("isabel.diaz@fakemail.com").birthDate(LocalDate.of(2011, 6, 30)).build(),
+        MemberCreate.builder().username("juan.martin").email("juan.martin@fakemail.com").birthDate(LocalDate.of(2006, 10, 8)).build()
     );
 
     

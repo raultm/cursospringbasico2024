@@ -43,6 +43,7 @@ public class Copy {
     private String reservedBy;
 
     @OneToMany(mappedBy = "copy")
+    @JsonIgnore
     private List<Loan> loans;
 
     public boolean isNew() {
@@ -50,7 +51,11 @@ public class Copy {
     }
 
     public boolean isBorrowed() {
-        return false;
+        return loans.stream().anyMatch(prestamo -> prestamo.getReturnedAt() == null);
+    }
+
+    public boolean estaEnPrestamo(){
+        return isBorrowed();
     }
 
     public int getRecommendedAge() {

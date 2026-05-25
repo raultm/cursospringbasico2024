@@ -1,14 +1,16 @@
 package com.example.curso2024.models;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.List;
+
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,15 +33,35 @@ public class Member {
     private String email;
     private boolean premium;
     private LocalDate birthDate;
-    @OneToMany(mappedBy = "member")
-    private List<Loan> loans;
     
-    public boolean isLoanLimitReached() {
-        return getLoans().size() > MAX_LOANS_FOR_MEMBER;
+    // TODO Cuando se haga relacion con Loans devolver el listado de prestamos
+    public List<Loan> prestamos(){
+        return new ArrayList<>();
     }
 
+    public int prestamosSinDevolver() {
+        return (int) prestamos().stream().filter(prestamo -> prestamo.getReturnedAt() == null).count();
+    }
 
-    public int getAge() {
+    public boolean haSuperadoElLimiteDePrestamos() {
+        return prestamosSinDevolver() >= MAX_LOANS_FOR_MEMBER;
+    }
+
+    public boolean tienePrestamoVencido(){
+        LocalDateTime today = LocalDateTime.now();
+        return prestamos().stream().anyMatch(prestamo -> prestamo.getReturnedAt() == null && prestamo.getExpiredAt().isBefore(today));
+    }
+
+    public boolean isVisitante(){ return false; }
+
+    public boolean isEstudiante(){ return false; }
+    
+    public boolean isProfesor(){ return false; }
+
+    public Integer getAge() {
+         if (getBirthDate() == null) {
+            return 0;
+        }
         return Period.between(getBirthDate(), LocalDate.now()).getYears();
     }
 }

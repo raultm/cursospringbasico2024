@@ -1,6 +1,5 @@
 package com.example.curso2024;
 
-import java.util.function.BooleanSupplier;
 
 public class MathUtils {
 
@@ -12,7 +11,7 @@ public class MathUtils {
         throw new NullPointerException();
     }
 
-    public static boolean isPrime(int number) {
+    public boolean isPrime(int number) {
         if (number <= 1) {
             return false;
         }

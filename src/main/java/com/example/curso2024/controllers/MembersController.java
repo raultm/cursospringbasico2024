@@ -11,6 +11,8 @@ import com.example.curso2024.models.Member;
 import com.example.curso2024.repositories.MemberRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -22,19 +24,21 @@ public class MembersController {
     @Autowired MemberRepository repository;
 
 
-    @GetMapping @Operation(operationId = "listMembers",summary = "Listar todos los miembros", tags = { "members" })
+    @GetMapping @Operation(operationId = "listMembers",summary = "Listar todos los Socios", tags = { "members" })
     public List<Member> findAll() {
         return repository.findAll();
     }
     
-    @PostMapping @Operation(operationId = "createMember",summary = "Crear nuevo Miembro", tags = { "members" })
+    @PostMapping @Operation(operationId = "createMember",summary = "Crear nuevo Socio", tags = { "members" })
     public Member save(Member member) { 
         return repository.save(member); 
     }
 
-    @GetMapping("{memberId}") @Operation(operationId = "listMembers",summary = "Listar todos los miembros", tags = { "members" })
-    public Member findByid(@PathVariable("memberId")Long memberId) {
-        return repository.findById(memberId).orElseThrow();
+    @DeleteMapping("{memberId}") @Operation(operationId = "deleteMember",summary = "Borra un socio", tags = { "members" })
+    public void deleteById(@PathVariable("memberId")Long memberId) {
+        repository.deleteById(memberId);
     }
+
+    // TODO Crear endpoint para obtener datos de un socio por su id
 
 }

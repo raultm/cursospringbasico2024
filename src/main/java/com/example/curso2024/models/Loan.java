@@ -1,6 +1,7 @@
 package com.example.curso2024.models;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,7 +31,7 @@ public class Loan {
     @ManyToOne
     @JoinColumn(name = "copy_id", nullable = false)
     private Copy copy;
-    private LocalDate startedAt;
-    private LocalDate expiredAt;
-    private LocalDate returnedAt;
+    private LocalDateTime startedAt;
+    private LocalDateTime expiredAt;
+    private LocalDateTime returnedAt;
 }

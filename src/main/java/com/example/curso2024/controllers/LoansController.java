@@ -1,6 +1,6 @@
 package com.example.curso2024.controllers;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,8 +41,8 @@ public class LoansController {
             Loan.builder()
                 .copy(copiesRepository.findById(loanCreate.getCopyId()).get())
                 .member(memberRepository.findById(loanCreate.getMemberId()).get())
-                .startedAt(LocalDate.now())
-                .expiredAt(LocalDate.now().plusDays(21))
+                .startedAt(LocalDateTime.now())
+                .expiredAt(LocalDateTime.now().plusDays(21))
                 .build()
         );
     }
@@ -57,7 +57,7 @@ public class LoansController {
                 return ResponseEntity.badRequest().body("El préstamo ya ha sido devuelto anteriormente.");
             }
             // Actualizar la fecha de devolución y guardar el préstamo
-            loan.setReturnedAt(LocalDate.now());
+            loan.setReturnedAt(LocalDateTime.now());
             repository.save(loan);
             return ResponseEntity.ok("Préstamo terminado exitosamente.");
         } else {

@@ -14,12 +14,13 @@ import org.junit.jupiter.params.provider.ValueSource;
 import com.example.curso2024.MathUtils;
 
 public class TestParametrizados {
-    
-    @ParameterizedTest  
-    //@ValueSource(ints = { 2, 7, 29, 67, 89, 90 })  
-    @ValueSource(ints = { 2, 7, 29, 67, 89 })  
-    void isPrime(int number) {  
-      Assertions.assertTrue(MathUtils.isPrime(number));  
+
+    @ParameterizedTest
+    // @ValueSource(ints = { 2, 7, 29, 67, 89, 90 })
+    @ValueSource(ints = { 2, 7, 29, 67, 89 })
+    void isPrime(int number) {
+        MathUtils mathUtils = new MathUtils();
+        Assertions.assertTrue(mathUtils.isPrime(number));
     }
 
     @ParameterizedTest
@@ -32,12 +33,11 @@ public class TestParametrizados {
 
     static Stream<Arguments> sumarDataProvider() {
         return Stream.of(
-            Arguments.of(2, 3, 5),
-            Arguments.of(5, 7, 12),
-            Arguments.of(-3, 8, 5)
-        );
+                Arguments.of(2, 3, 5),
+                Arguments.of(5, 7, 12),
+                Arguments.of(-3, 8, 5));
     }
-    
+
     @ParameterizedTest
     @CsvFileSource(resources = "/datos-descuento.csv", numLinesToSkip = 1)
     void testCalcularDescuento(double precioOriginal, int porcentajeDescuento, double precioEsperado) {

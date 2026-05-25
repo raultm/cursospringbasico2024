@@ -1,5 +1,7 @@
 package com.example.curso2024.dto;
 
+import java.time.LocalDate;
+
 import com.example.curso2024.models.Member;
 
 import lombok.Builder;
@@ -11,9 +13,10 @@ public class MemberCreate {
     
     private String username;
     private String email;
+    private LocalDate birthDate;
     
     
     public Member toMember() {
-        return Member.builder().username(username).email(email).build();
+        return Member.builder().username(username).email(email).birthDate(birthDate).build();
     }
 }
