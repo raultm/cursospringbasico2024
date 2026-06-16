@@ -77,6 +77,17 @@
 			<artifactId>junit-platform-suite-engine</artifactId>
 			<version>1.8.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-database-oracle</artifactId>
+		</dependency>
+
+
+		
 	</dependencies>
 
 	<build>
@@ -94,6 +105,120 @@
 					</excludes>
 				</configuration>
 			</plugin>
+
+			<plugin>
+    <groupId>org.openapitools</groupId>
+    <artifactId>openapi-generator-maven-plugin</artifactId>
+    <version>7.14.0</version>
+
+    <executions>
+        <execution>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+
+            <configuration>
+
+                <inputSpec>
+                    ${project.basedir}/src/main/resources/openapi/api.yaml
+                </inputSpec>
+
+                <generatorName>spring</generatorName>
+
+                <apiPackage>
+                    com.example.curso2024.api
+                </apiPackage>
+
+                <modelPackage>
+                    com.example.curso2024.dto
+                </modelPackage>
+
+                <configOptions>
+                    <interfaceOnly>true</interfaceOnly>
+                    <useSpringBoot3>true</useSpringBoot3>
+                    <useJakartaEe>true</useJakartaEe>
+                    <delegatePattern>true</delegatePattern>
+                </configOptions>
+
+                <generateApiTests>false</generateApiTests>
+                <generateModelTests>false</generateModelTests>
+
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+
+<plugin>
+	<groupId>org.openapitools</groupId>
+	<artifactId>openapi-generator-maven-plugin</artifactId>
+	<version>7.5.0</version>
+	<executions>
+		<execution>
+			<goals>
+				<goal>generate</goal>
+			</goals>
+			<configuration>
+				<inputSpec>${project.basedir}/src/main/resources/static/openapi.yaml</inputSpec>
+				<generatorName>spring</generatorName>
+				<apiPackage>com.example.curso2024.api</apiPackage>
+				<modelPackage>com.example.curso2024.dto</modelPackage>
+				<supportingFilesToGenerate>
+					ApiUtil.java
+				</supportingFilesToGenerate>
+				<configOptions>
+					<delegatePattern>true</delegatePattern>
+					<serializableModel>true</serializableModel>
+					<useBeanValidation>true</useBeanValidation>
+					<useJakartaEe>true</useJakartaEe>
+					<openApiNullable>false</openApiNullable>
+				</configOptions>
+			</configuration>
+		</execution>
+	</executions>
+</plugin>
+
+
+<!-- <plugin>
+    <groupId>org.openapitools</groupId>
+    <artifactId>openapi-generator-maven-plugin</artifactId>
+    <version>7.14.0</version>
+
+    <executions>
+        <execution>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+
+            <configuration>
+
+                <inputSpec>
+                    ${project.basedir}/src/main/resources/static/openapi.yaml
+                </inputSpec>
+
+                <generatorName>spring</generatorName>
+
+                <apiPackage>
+                    com.example.curso2024.api
+                </apiPackage>
+
+                <modelPackage>
+                    com.example.curso2024.dto
+                </modelPackage>
+
+                <configOptions>
+                    <interfaceOnly>true</interfaceOnly>
+                    <useSpringBoot3>true</useSpringBoot3>
+                    <useJakartaEe>true</useJakartaEe>
+                    <delegatePattern>true</delegatePattern>
+                </configOptions>
+
+                <generateApiTests>false</generateApiTests>
+                <generateModelTests>false</generateModelTests>
+
+            </configuration>
+        </execution>
+    </executions>
+</plugin> -->
 		</plugins>
 	</build>
 

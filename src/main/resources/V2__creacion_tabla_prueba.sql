@@ -1,0 +1,3 @@
+CREATE TABLE "PUBLIC"."PRUEBA"
+    "ID" BIGINT NOT NULL
+);      

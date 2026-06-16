@@ -11,12 +11,14 @@ import com.example.curso2024.models.Member;
 import com.example.curso2024.repositories.MemberRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
+@Slf4j
 @RestController
 @RequestMapping("members")
 public class MembersController {
@@ -26,6 +28,11 @@ public class MembersController {
 
     @GetMapping @Operation(operationId = "listMembers",summary = "Listar todos los Socios", tags = { "members" })
     public List<Member> findAll() {
+        log.trace("Este es un mensaje de trace");
+        log.debug("Este es un mensaje de debug");
+        log.info("Este es un mensaje de info");
+        log.warn("Este es un mensaje de warn");
+        log.error("Este es un mensaje de error");
         return repository.findAll();
     }
     
