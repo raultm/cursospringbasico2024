@@ -11,6 +11,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,12 +33,16 @@ public class Member {
     private String username;
     private String email;
     private String perfil;
+    private String cuenta;
     private boolean premium;
     private LocalDate birthDate;
+
+    @OneToMany(mappedBy = "member")
+    private List<Loan> prestamos = new ArrayList<>();
     
     // TODO Cuando se haga relacion con Loans devolver el listado de prestamos
     public List<Loan> prestamos(){
-        return new ArrayList<>();
+        return prestamos;
     }
 
     public int prestamosSinDevolver() {

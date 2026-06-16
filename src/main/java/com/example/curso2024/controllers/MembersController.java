@@ -40,5 +40,9 @@ public class MembersController {
     }
 
     // TODO Crear endpoint para obtener datos de un socio por su id
+    @GetMapping("{memberId}") @Operation(operationId = "findMember",summary = "Obtener Detalles de un Socio", tags = { "members" })
+    public Member findById(@PathVariable("memberId")Long memberId) {
+        return repository.findById(memberId).orElseThrow();
+    }
 
 }

@@ -9,6 +9,11 @@ public class HomeController {
     
     @GetMapping("/")
     public String hello(){
-        return "{ 'message': 'Hello World!'}";
+        return "Springboot";
+    }
+
+    @GetMapping("/escuela")
+    public String eap(){
+        return "EAP";
     }
 }

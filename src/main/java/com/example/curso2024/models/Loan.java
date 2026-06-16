@@ -2,6 +2,8 @@ package com.example.curso2024.models;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -27,6 +29,7 @@ public class Loan {
 
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
+    @JsonIgnore
     private Member member;
     @ManyToOne
     @JoinColumn(name = "copy_id", nullable = false)
