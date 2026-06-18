@@ -10,8 +10,8 @@ import com.example.curso2024.models.Member;
 public class PerfilEstandar implements PerfilSocio {
 
     @Override
-    public String getNombre() {
-        return "";
+    public Perfil getPerfil() {
+        return Perfil.ESTANDAR;
     }
 
     @Override

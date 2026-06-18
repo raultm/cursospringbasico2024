@@ -14,12 +14,12 @@ public class ContextoPrestamoResolver {
         this.contextos = contextos;
     }
 
-    public String resolver(LocalDateTime fechaComienzo) {
+    public Contexto resolver(LocalDateTime fechaComienzo) {
         return contextos.stream()
                 .filter(contexto -> contexto.aplica(fechaComienzo))
                 .findFirst()
-                .map(ContextoPrestamo::getNombre)
-                .orElse("horario_diurno");
+                .map(ContextoPrestamo::getContexto)
+                .orElse(Contexto.HORARIO_DIURNO);
     }
 
 }

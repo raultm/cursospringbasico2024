@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 public class ContextoNocturno implements ContextoPrestamo {
 
     @Override
-    public String getNombre() {
-        return "horario_nocturno";
+    public Contexto getContexto() {
+        return Contexto.HORARIO_NOCTURNO;
     }
 
     @Override

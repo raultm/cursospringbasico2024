@@ -15,12 +15,12 @@ public class PerfilSocioResolver {
         this.perfiles = perfiles;
     }
 
-    public String resolver(Member socio) {
+    public Perfil resolver(Member socio) {
         return perfiles.stream()
                 .filter(perfil -> perfil.aplica(socio))
                 .findFirst()
-                .map(PerfilSocio::getNombre)
-                .orElse("");
+                .map(PerfilSocio::getPerfil)
+                .orElse(Perfil.ESTANDAR);
     }
 
 }

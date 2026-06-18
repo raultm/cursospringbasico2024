@@ -4,7 +4,7 @@ import com.example.curso2024.models.Member;
 
 public interface PerfilSocio {
 
-    String getNombre();
+    Perfil getPerfil();
 
     boolean aplica(Member socio);
 

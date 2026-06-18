@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 public class ContextoFinDeSemana implements ContextoPrestamo {
 
     @Override
-    public String getNombre() {
-        return "findesemana";
+    public Contexto getContexto() {
+        return Contexto.FINDESEMANA;
     }
 
     @Override

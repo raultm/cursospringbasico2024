@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 public class ContextoVacaciones implements ContextoPrestamo {
 
     @Override
-    public String getNombre() {
-        return "vacaciones";
+    public Contexto getContexto() {
+        return Contexto.VACACIONES;
     }
 
     @Override

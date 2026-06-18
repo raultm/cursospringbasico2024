@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public interface ContextoPrestamo {
 
-    String getNombre();
+    Contexto getContexto();
 
     boolean aplica(LocalDateTime fechaComienzo);
 
