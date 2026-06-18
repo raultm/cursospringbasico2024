@@ -10,14 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.management.RuntimeErrorException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.curso2024.interfaces.noprestable.CopiaEnPrestamo;
 import com.example.curso2024.interfaces.noprestable.NoPrestable;
-import com.example.curso2024.interfaces.noprestable.SocioSuperaLimitePrestamos;
 import com.example.curso2024.interfaces.noprestable.SocioTienePrestamoVencido;
 import com.example.curso2024.models.Copy;
 import com.example.curso2024.models.Loan;
@@ -33,14 +30,11 @@ public class CalcularPrestamoService {
     public static final String SOCIO_PRESTAMO_VENCIDO = SocioTienePrestamoVencido.MENSAJE;
     public static final String FECHA_FIN_SEMANA = "El perfil de usuario no puede sacar libros en fin de semana";
 
-    // private List<NoPrestable> reglasNoPrestables = List.of(
-    //         new CopiaEnPrestamo(),
-    //         new SocioTienePrestamoVencido(),
-    //         new SocioSuperaLimitePrestamos()
-    // );
+    private final List<NoPrestable> reglasNoPrestables;
 
-    @Autowired
-    private List<NoPrestable> reglasNoPrestables;
+    public CalcularPrestamoService(List<NoPrestable> reglasNoPrestables) {
+        this.reglasNoPrestables = reglasNoPrestables;
+    }
 
 
     private static DateTimeFormatter formatter = new DateTimeFormatterBuilder()
