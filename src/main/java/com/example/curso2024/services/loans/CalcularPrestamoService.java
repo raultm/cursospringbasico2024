@@ -2,9 +2,11 @@ package com.example.curso2024.services.loans;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
+import java.util.Map;
 
 import javax.management.RuntimeErrorException;
 
@@ -32,52 +34,123 @@ public class CalcularPrestamoService {
             .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
             .toFormatter();
 
+    private static Map<String, Map<String, Integer>> reglas = Map.of(
+        "profesor", Map.of(
+            "vacaciones", 60,
+            "horario_diurno", 30,
+            "horario_nocturno", 15,
+            "findesemana", 30
+        ),
+        "estudiante", Map.of(
+            "vacaciones", 0,
+            "horario_diurno", 15,
+            "horario_nocturno", 7,
+            "findesemana", 0
+        ),
+        "visitante", Map.of(
+            "vacaciones", 0,
+            "horario_diurno", 7,
+            "horario_nocturno", 3,
+            "findesemana", 0
+        ),
+        "", Map.of(
+            "vacaciones", 21,
+            "horario_diurno", 21,
+            "horario_nocturno", 21,
+            "findesemana", 21
+        )
+    );
+
     // TODO Logica de calcular el prestamo a guardar
     public Loan execute(Member socio, Copy copia, String fecha) {
         int diasPrestamo = 21;
 
         LocalDateTime fechaComienzo = LocalDateTime.parse(fecha, formatter);
 
-        DayOfWeek dia = fechaComienzo.getDayOfWeek();
-        boolean esFinDeSemana = dia.equals(DayOfWeek.SATURDAY) || dia.equals(DayOfWeek.SUNDAY);
+        lanzaExcepcionSiPrestamoNoEsPosible(socio, copia, fechaComienzo);
 
-        if(!esFinDeSemana || socio.isProfesor()){
-            if(!socio.tienePrestamoVencido()){
-                if (!socio.haSuperadoElLimiteDePrestamos()) {
-                    if (!copia.estaEnPrestamo()) {
+        String perfil = resolvePerfil(socio);
+        String contexto = resolverContexto(fechaComienzo);
+        
+        diasPrestamo = reglas.getOrDefault(perfil,Map.of()).getOrDefault(contexto, 0);
 
-                        if (socio.isVisitante()) {
-                            diasPrestamo = 7;
-                        } else if (socio.isEstudiante()) {
-                            diasPrestamo = 15;
-                        } else if (socio.isProfesor()) {
-                            diasPrestamo = 30;
-                        }
+        LocalDateTime fechaEntrega = fechaComienzo.plusDays(diasPrestamo);
+        fechaEntrega = modificacionesALaFechaDeEntrega(fechaEntrega);
 
-                        return Loan.builder()
-                                .member(socio)
-                                .copy(copia)
-                                .startedAt(fechaComienzo)
-                                .expiredAt(fechaComienzo.plusDays(diasPrestamo))
-                                .build();
-
-                    } else {
-                        throw new RuntimeException(COPIA_PRESTADA);
-                    }
-                } else {
-                    throw new RuntimeException(SOCIO_LIMITE_PRESTAMO);
-                }
-            }else{
-                throw new RuntimeException(SOCIO_PRESTAMO_VENCIDO);
-            }
-        } else{
-             throw new RuntimeException(FECHA_FIN_SEMANA);
-        }
+        return Loan.builder()
+                .member(socio)
+                .copy(copia)
+                .startedAt(fechaComienzo)
+                .expiredAt(fechaEntrega)
+                .build();
 
     }
 
-    // socio.isEstudiante() socio.getPerfil().equalsIgnoreCase("estudiante")
+    private LocalDateTime modificacionesALaFechaDeEntrega(LocalDateTime fechaEntrega) {
+        LocalDateTime fechaEntregaFinal = fechaEntrega;
+        
+        if(fechaEntregaFinal.getDayOfWeek().equals(DayOfWeek.SATURDAY)){
+            fechaEntregaFinal.plusDays(2);
+        }
 
-    // throw new RuntimeException(COPIA_PRESTADA);
+        if(fechaEntregaFinal.getDayOfWeek().equals(DayOfWeek.SUNDAY)){
+            fechaEntregaFinal.plusDays(1);
+        }
 
+        return fechaEntregaFinal;
+    }
+
+    private String resolvePerfil(Member socio){
+        if(socio.isVisitante()) return "visitante";
+        if(socio.isEstudiante()) return "estudiante";
+        if(socio.isProfesor()) return "profesor";
+        return "";
+    }
+
+    private String resolverContexto(LocalDateTime fechaComienzo) {
+        if(fechaComienzo.getMonth().equals(Month.JULY) || fechaComienzo.getMonth().equals(Month.AUGUST)){
+            return "vacaciones";
+        }
+
+        if(fechaComienzo.getDayOfWeek().equals(DayOfWeek.SATURDAY) || fechaComienzo.getDayOfWeek().equals(DayOfWeek.SUNDAY)){
+            return "findesemana";
+        }
+
+        if(fechaComienzo.getHour() >= 20 && fechaComienzo.getHour()<8){
+            return "horario_nocturno";
+        }
+
+        return "horario_diurno";
+    }
+
+    private void lanzaExcepcionSiPrestamoNoEsPosible(Member socio, Copy copia, LocalDateTime fechaComienzo) {
+        DayOfWeek dia = fechaComienzo.getDayOfWeek();
+        boolean esFinDeSemana = dia.equals(DayOfWeek.SATURDAY) || dia.equals(DayOfWeek.SUNDAY);
+        boolean esFinDeSemanaYNoProfesor = esFinDeSemana && !socio.isProfesor();
+        
+        if (esFinDeSemanaYNoProfesor) {
+            throw new RuntimeException(FECHA_FIN_SEMANA);
+        }
+
+        if (socio.tienePrestamoVencido()) {
+            throw new RuntimeException(SOCIO_PRESTAMO_VENCIDO);
+        }
+
+        if (socio.haSuperadoElLimiteDePrestamos()) {
+            throw new RuntimeException(SOCIO_LIMITE_PRESTAMO);
+        }
+
+        if (copia.estaEnPrestamo()) {
+
+            throw new RuntimeException(COPIA_PRESTADA);
+        }
+    }
+
+    // if (socio.isVisitante()) {
+    //         diasPrestamo = 7;
+    //     } else if (socio.isEstudiante()) {
+    //         diasPrestamo = 15;
+    //     } else if (socio.isProfesor()) {
+    //         diasPrestamo = 30;
+    //     }
 }
