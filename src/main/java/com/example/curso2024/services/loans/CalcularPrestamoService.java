@@ -4,25 +4,26 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 
 import org.springframework.stereotype.Service;
 
-import com.example.curso2024.interfaces.ajustefechaentrega.AjusteFechaEntrega;
-import com.example.curso2024.interfaces.contextoprestamo.ContextoPrestamo;
+import com.example.curso2024.interfaces.ajustefechaentrega.AjusteFechaEntregaResolver;
+import com.example.curso2024.interfaces.contextoprestamo.ContextoPrestamoResolver;
 import com.example.curso2024.interfaces.noprestable.CopiaEnPrestamo;
-import com.example.curso2024.interfaces.noprestable.NoPrestable;
+import com.example.curso2024.interfaces.noprestable.NoPrestableValidator;
 import com.example.curso2024.interfaces.noprestable.SocioNoProfesorEnFinDeSemana;
 import com.example.curso2024.interfaces.noprestable.SocioTienePrestamoVencido;
-import com.example.curso2024.interfaces.perfilsocio.PerfilSocio;
+import com.example.curso2024.interfaces.perfilsocio.PerfilSocioResolver;
 import com.example.curso2024.models.Copy;
 import com.example.curso2024.models.Loan;
 import com.example.curso2024.models.Member;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class CalcularPrestamoService {
 
     public static final String COPIA_PRESTADA = CopiaEnPrestamo.MENSAJE;
@@ -32,20 +33,12 @@ public class CalcularPrestamoService {
     public static final String SOCIO_PRESTAMO_VENCIDO = SocioTienePrestamoVencido.MENSAJE;
     public static final String FECHA_FIN_SEMANA = SocioNoProfesorEnFinDeSemana.MENSAJE;
 
-    private final List<NoPrestable> reglasNoPrestables;
-    private final List<PerfilSocio> perfilesSocio;
-    private final List<ContextoPrestamo> contextosPrestamo;
-    private final List<AjusteFechaEntrega> ajustesFechaEntrega;
+    private final NoPrestableValidator noPrestableValidator;
+    private final PerfilSocioResolver perfilSocioResolver;
+    private final ContextoPrestamoResolver contextoPrestamoResolver;
+    private final AjusteFechaEntregaResolver ajusteFechaEntregaResolver;
 
-    public CalcularPrestamoService(List<NoPrestable> reglasNoPrestables, List<PerfilSocio> perfilesSocio,
-            List<ContextoPrestamo> contextosPrestamo, List<AjusteFechaEntrega> ajustesFechaEntrega) {
-        this.reglasNoPrestables = reglasNoPrestables;
-        this.perfilesSocio = perfilesSocio;
-        this.contextosPrestamo = contextosPrestamo;
-        this.ajustesFechaEntrega = ajustesFechaEntrega;
-    }
-
-
+    
     private static DateTimeFormatter formatter = new DateTimeFormatterBuilder()
             .appendOptional(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
             .appendOptional(DateTimeFormatter.ISO_LOCAL_DATE)
@@ -78,19 +71,17 @@ public class CalcularPrestamoService {
 
     // TODO Logica de calcular el prestamo a guardar
     public Loan execute(Member socio, Copy copia, String fecha) {
-        int diasPrestamo = 21;
-
         LocalDateTime fechaComienzo = LocalDateTime.parse(fecha, formatter);
 
-        lanzaExcepcionSiPrestamoNoEsPosible(socio, copia, fechaComienzo);
+        noPrestableValidator.validar(socio, copia, fechaComienzo);
 
-        String perfil = resolvePerfil(socio);
-        String contexto = resolverContexto(fechaComienzo);
+        String perfil = perfilSocioResolver.resolver(socio);
+        String contexto = contextoPrestamoResolver.resolver(fechaComienzo);
 
-        diasPrestamo = reglas.getOrDefault(perfil, Map.of()).getOrDefault(contexto, 0);
+        int diasPrestamo = reglas.getOrDefault(perfil, Map.of()).getOrDefault(contexto, 0);
 
         LocalDateTime fechaEntrega = fechaComienzo.plusDays(diasPrestamo);
-        fechaEntrega = modificacionesALaFechaDeEntrega(fechaEntrega);
+        fechaEntrega = ajusteFechaEntregaResolver.ajustar(fechaEntrega);
 
         return Loan.builder()
                 .member(socio)
@@ -99,42 +90,6 @@ public class CalcularPrestamoService {
                 .expiredAt(fechaEntrega)
                 .build();
 
-    }
-
-    private LocalDateTime modificacionesALaFechaDeEntrega(LocalDateTime fechaEntrega) {
-        return ajustesFechaEntrega.stream()
-                .filter(ajuste -> ajuste.aplica(fechaEntrega))
-                .findFirst()
-                .map(ajuste -> ajuste.ajustar(fechaEntrega))
-                .orElse(fechaEntrega);
-    }
-
-    private String resolvePerfil(Member socio) {
-        return perfilesSocio.stream()
-                .filter(perfil -> perfil.aplica(socio))
-                .findFirst()
-                .map(PerfilSocio::getNombre)
-                .orElse("");
-    }
-
-    private String resolverContexto(LocalDateTime fechaComienzo) {
-        return contextosPrestamo.stream()
-                .filter(contexto -> contexto.aplica(fechaComienzo))
-                .findFirst()
-                .map(ContextoPrestamo::getNombre)
-                .orElse("horario_diurno");
-    }
-
-    private void lanzaExcepcionSiPrestamoNoEsPosible(Member socio, Copy copia, LocalDateTime fechaComienzo) {
-        List<String> mensajes = new ArrayList<>();
-
-        reglasNoPrestables.stream()
-                .filter(noPrestable -> noPrestable.cumple(socio, copia, fechaComienzo))
-                .forEach(noPrestable -> mensajes.add(noPrestable.getMensaje(socio, copia, fechaComienzo)));
-
-        if (!mensajes.isEmpty()) {
-            throw new RuntimeException(String.join(", ", mensajes));
-        }
     }
 
 }
