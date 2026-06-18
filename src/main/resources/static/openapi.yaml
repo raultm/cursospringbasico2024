@@ -15,8 +15,51 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/BookSummary'
+  /socios:
+    post:
+      summary: Registrar un nuevo socio
+      operationId: registrarSocio
+      tags:
+        - socios
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SocioRegistro'
+      responses:
+        '200':
+          description: Socio registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Socio'
 components:
   schemas:
+    SocioRegistro:
+      type: object
+      properties:
+        nombre:
+          type: string
+        email:
+          type: string
+        perfil:
+          type: string
+        nacimiento:
+          type: string
+    Socio:
+      type: object
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+        email:
+          type: string
+        perfil:
+          type: string
+        nacimiento:
+          type: string
     BookSummary:
       type: object
       properties:

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,7 +38,7 @@ public class MembersController {
     }
     
     @PostMapping @Operation(operationId = "createMember",summary = "Crear nuevo Socio", tags = { "members" })
-    public Member save(Member member) { 
+    public Member save(@RequestBody Member member) {
         return repository.save(member); 
     }
 
