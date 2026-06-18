@@ -1,8 +1,6 @@
 package com.example.curso2024.services.loans;
 
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
@@ -13,9 +11,13 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.example.curso2024.interfaces.ajustefechaentrega.AjusteFechaEntrega;
+import com.example.curso2024.interfaces.contextoprestamo.ContextoPrestamo;
 import com.example.curso2024.interfaces.noprestable.CopiaEnPrestamo;
 import com.example.curso2024.interfaces.noprestable.NoPrestable;
+import com.example.curso2024.interfaces.noprestable.SocioNoProfesorEnFinDeSemana;
 import com.example.curso2024.interfaces.noprestable.SocioTienePrestamoVencido;
+import com.example.curso2024.interfaces.perfilsocio.PerfilSocio;
 import com.example.curso2024.models.Copy;
 import com.example.curso2024.models.Loan;
 import com.example.curso2024.models.Member;
@@ -28,12 +30,19 @@ public class CalcularPrestamoService {
     public static final String COPIA_NO_DISPONIBLE_POR_EDAD = "La Copia no se puede prestar a ese Socio por la edad";
     public static final String SOCIO_LIMITE_PRESTAMO = "El Socio ha alcanzado el límite de préstamos abiertos";
     public static final String SOCIO_PRESTAMO_VENCIDO = SocioTienePrestamoVencido.MENSAJE;
-    public static final String FECHA_FIN_SEMANA = "El perfil de usuario no puede sacar libros en fin de semana";
+    public static final String FECHA_FIN_SEMANA = SocioNoProfesorEnFinDeSemana.MENSAJE;
 
     private final List<NoPrestable> reglasNoPrestables;
+    private final List<PerfilSocio> perfilesSocio;
+    private final List<ContextoPrestamo> contextosPrestamo;
+    private final List<AjusteFechaEntrega> ajustesFechaEntrega;
 
-    public CalcularPrestamoService(List<NoPrestable> reglasNoPrestables) {
+    public CalcularPrestamoService(List<NoPrestable> reglasNoPrestables, List<PerfilSocio> perfilesSocio,
+            List<ContextoPrestamo> contextosPrestamo, List<AjusteFechaEntrega> ajustesFechaEntrega) {
         this.reglasNoPrestables = reglasNoPrestables;
+        this.perfilesSocio = perfilesSocio;
+        this.contextosPrestamo = contextosPrestamo;
+        this.ajustesFechaEntrega = ajustesFechaEntrega;
     }
 
 
@@ -93,84 +102,39 @@ public class CalcularPrestamoService {
     }
 
     private LocalDateTime modificacionesALaFechaDeEntrega(LocalDateTime fechaEntrega) {
-        LocalDateTime fechaEntregaFinal = fechaEntrega;
-
-        if (fechaEntregaFinal.getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
-            fechaEntregaFinal.plusDays(2);
-        }
-
-        if (fechaEntregaFinal.getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
-            fechaEntregaFinal.plusDays(1);
-        }
-
-        return fechaEntregaFinal;
+        return ajustesFechaEntrega.stream()
+                .filter(ajuste -> ajuste.aplica(fechaEntrega))
+                .findFirst()
+                .map(ajuste -> ajuste.ajustar(fechaEntrega))
+                .orElse(fechaEntrega);
     }
 
     private String resolvePerfil(Member socio) {
-        if (socio.isVisitante())
-            return "visitante";
-        if (socio.isEstudiante())
-            return "estudiante";
-        if (socio.isProfesor())
-            return "profesor";
-        return "";
+        return perfilesSocio.stream()
+                .filter(perfil -> perfil.aplica(socio))
+                .findFirst()
+                .map(PerfilSocio::getNombre)
+                .orElse("");
     }
 
     private String resolverContexto(LocalDateTime fechaComienzo) {
-        if (fechaComienzo.getMonth().equals(Month.JULY) || fechaComienzo.getMonth().equals(Month.AUGUST)) {
-            return "vacaciones";
-        }
-
-        if (fechaComienzo.getDayOfWeek().equals(DayOfWeek.SATURDAY)
-                || fechaComienzo.getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
-            return "findesemana";
-        }
-
-        if (fechaComienzo.getHour() >= 20 && fechaComienzo.getHour() < 8) {
-            return "horario_nocturno";
-        }
-
-        return "horario_diurno";
+        return contextosPrestamo.stream()
+                .filter(contexto -> contexto.aplica(fechaComienzo))
+                .findFirst()
+                .map(ContextoPrestamo::getNombre)
+                .orElse("horario_diurno");
     }
 
     private void lanzaExcepcionSiPrestamoNoEsPosible(Member socio, Copy copia, LocalDateTime fechaComienzo) {
-        DayOfWeek dia = fechaComienzo.getDayOfWeek();
-        boolean esFinDeSemana = dia.equals(DayOfWeek.SATURDAY) || dia.equals(DayOfWeek.SUNDAY);
-        boolean esFinDeSemanaYNoProfesor = esFinDeSemana && !socio.isProfesor();
-
         List<String> mensajes = new ArrayList<>();
 
         reglasNoPrestables.stream()
                 .filter(noPrestable -> noPrestable.cumple(socio, copia, fechaComienzo))
                 .forEach(noPrestable -> mensajes.add(noPrestable.getMensaje(socio, copia, fechaComienzo)));
 
-        // if (esFinDeSemanaYNoProfesor) {
-        // mensajes.add(FECHA_FIN_SEMANA);
-        // }
-
-        // if (socio.tienePrestamoVencido()) {
-        // mensajes.add(SOCIO_PRESTAMO_VENCIDO);
-        // }
-
-        // if (socio.haSuperadoElLimiteDePrestamos()) {
-        // mensajes.add(SOCIO_LIMITE_PRESTAMO);
-        // }
-
-        // if (copia.estaEnPrestamo()) {
-
-        // mensajes.add(COPIA_PRESTADA);
-        // }
-
         if (!mensajes.isEmpty()) {
             throw new RuntimeException(String.join(", ", mensajes));
         }
     }
 
-    // if (socio.isVisitante()) {
-    // diasPrestamo = 7;
-    // } else if (socio.isEstudiante()) {
-    // diasPrestamo = 15;
-    // } else if (socio.isProfesor()) {
-    // diasPrestamo = 30;
-    // }
 }
