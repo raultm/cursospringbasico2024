@@ -19,6 +19,10 @@ import org.junit.jupiter.api.Nested;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.example.curso2024.interfaces.noprestable.CopiaEnPrestamo;
+import com.example.curso2024.interfaces.noprestable.SocioNoProfesorEnFinDeSemana;
+import com.example.curso2024.interfaces.noprestable.SocioSuperaLimitePrestamos;
+import com.example.curso2024.interfaces.noprestable.SocioTienePrestamoVencido;
 import com.example.curso2024.models.Copy;
 import com.example.curso2024.models.Loan;
 import com.example.curso2024.models.Member;
@@ -92,7 +96,7 @@ class CalcularPrestamoServiceTest {
       Exception ex = assertThrows(RuntimeException.class, () -> {
         calculateNewLoanService.execute(member, copy, dateString);
       });
-      assertTrue(ex.getMessage().contains(CalcularPrestamoService.COPIA_PRESTADA));
+      assertTrue(ex.getMessage().contains(CopiaEnPrestamo.MENSAJE));
     }
 
     @Test
@@ -102,7 +106,7 @@ class CalcularPrestamoServiceTest {
       Exception ex = assertThrows(RuntimeException.class, () -> {
         calculateNewLoanService.execute(member, copy, dateString);
       });
-      assertTrue(ex.getMessage().contains(CalcularPrestamoService.SOCIO_LIMITE_PRESTAMO));
+      assertTrue(ex.getMessage().contains(SocioSuperaLimitePrestamos.MENSAJE));
     }
 
     @Test
@@ -112,7 +116,7 @@ class CalcularPrestamoServiceTest {
       Exception ex = assertThrows(RuntimeException.class, () -> {
         calculateNewLoanService.execute(member, copy, dateString);
       });
-      assertTrue(ex.getMessage().contains(CalcularPrestamoService.SOCIO_PRESTAMO_VENCIDO));
+      assertTrue(ex.getMessage().contains(SocioTienePrestamoVencido.MENSAJE));
     }
 
     @Test
@@ -123,7 +127,7 @@ class CalcularPrestamoServiceTest {
       Exception ex = assertThrows(RuntimeException.class, () -> {
         calculateNewLoanService.execute(member, copy, dateString);
       });
-      assertTrue(ex.getMessage().contains(CalcularPrestamoService.FECHA_FIN_SEMANA));
+      assertTrue(ex.getMessage().contains(SocioNoProfesorEnFinDeSemana.MENSAJE));
       
     }
 

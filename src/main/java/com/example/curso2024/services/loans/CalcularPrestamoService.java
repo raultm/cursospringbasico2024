@@ -26,13 +26,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CalcularPrestamoService {
 
-    public static final String COPIA_PRESTADA = CopiaEnPrestamo.MENSAJE;
-    public static final String COPIA_RESERVADA = "La copia ya está reservada";
-    public static final String COPIA_NO_DISPONIBLE_POR_EDAD = "La Copia no se puede prestar a ese Socio por la edad";
-    public static final String SOCIO_LIMITE_PRESTAMO = "El Socio ha alcanzado el límite de préstamos abiertos";
-    public static final String SOCIO_PRESTAMO_VENCIDO = SocioTienePrestamoVencido.MENSAJE;
-    public static final String FECHA_FIN_SEMANA = SocioNoProfesorEnFinDeSemana.MENSAJE;
-
     private final NoPrestableValidator noPrestableValidator;
     private final PerfilSocioResolver perfilSocioResolver;
     private final ContextoPrestamoResolver contextoPrestamoResolver;
