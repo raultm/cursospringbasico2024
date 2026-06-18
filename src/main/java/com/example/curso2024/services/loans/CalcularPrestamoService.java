@@ -41,7 +41,7 @@ public class CalcularPrestamoService {
         DayOfWeek dia = fechaComienzo.getDayOfWeek();
         boolean esFinDeSemana = dia.equals(DayOfWeek.SATURDAY) || dia.equals(DayOfWeek.SUNDAY);
 
-        //if(esFinDeSemana && socio.isProfesor()){
+        if(!esFinDeSemana || socio.isProfesor()){
             if(!socio.tienePrestamoVencido()){
                 if (!socio.haSuperadoElLimiteDePrestamos()) {
                     if (!copia.estaEnPrestamo()) {
@@ -70,9 +70,9 @@ public class CalcularPrestamoService {
             }else{
                 throw new RuntimeException(SOCIO_PRESTAMO_VENCIDO);
             }
-        //} else{
-        //     throw new RuntimeException(FECHA_FIN_SEMANA);
-        // }
+        } else{
+             throw new RuntimeException(FECHA_FIN_SEMANA);
+        }
 
     }
 
