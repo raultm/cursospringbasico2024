@@ -28,9 +28,9 @@ class CalcularPrestamoServiceTest {
   @Mock
   Copy copy;
 
-  String dateString = "2024-01-01";
+  String dateString = "2024-04-01T10:24";
 
-  DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+  DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
 
   @BeforeEach
   public void init() {

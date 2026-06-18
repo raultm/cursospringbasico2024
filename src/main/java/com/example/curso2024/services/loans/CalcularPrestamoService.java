@@ -1,9 +1,12 @@
 package com.example.curso2024.services.loans;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
+
+import javax.management.RuntimeErrorException;
 
 import org.springframework.stereotype.Service;
 
@@ -34,14 +37,47 @@ public class CalcularPrestamoService {
         int diasPrestamo = 21;
 
         LocalDateTime fechaComienzo = LocalDateTime.parse(fecha, formatter);
-        
-        return Loan.builder()
-                .member(socio)
-                .copy(copia)
-                .startedAt(fechaComienzo)
-                .expiredAt(fechaComienzo.plusDays(diasPrestamo))
-                .build();
+
+        DayOfWeek dia = fechaComienzo.getDayOfWeek();
+        boolean esFinDeSemana = dia.equals(DayOfWeek.SATURDAY) || dia.equals(DayOfWeek.SUNDAY);
+
+        //if(esFinDeSemana && socio.isProfesor()){
+            if(!socio.tienePrestamoVencido()){
+                if (!socio.haSuperadoElLimiteDePrestamos()) {
+                    if (!copia.estaEnPrestamo()) {
+
+                        if (socio.isVisitante()) {
+                            diasPrestamo = 7;
+                        } else if (socio.isEstudiante()) {
+                            diasPrestamo = 15;
+                        } else if (socio.isProfesor()) {
+                            diasPrestamo = 30;
+                        }
+
+                        return Loan.builder()
+                                .member(socio)
+                                .copy(copia)
+                                .startedAt(fechaComienzo)
+                                .expiredAt(fechaComienzo.plusDays(diasPrestamo))
+                                .build();
+
+                    } else {
+                        throw new RuntimeException(COPIA_PRESTADA);
+                    }
+                } else {
+                    throw new RuntimeException(SOCIO_LIMITE_PRESTAMO);
+                }
+            }else{
+                throw new RuntimeException(SOCIO_PRESTAMO_VENCIDO);
+            }
+        //} else{
+        //     throw new RuntimeException(FECHA_FIN_SEMANA);
+        // }
 
     }
+
+    // socio.isEstudiante() socio.getPerfil().equalsIgnoreCase("estudiante")
+
+    // throw new RuntimeException(COPIA_PRESTADA);
 
 }

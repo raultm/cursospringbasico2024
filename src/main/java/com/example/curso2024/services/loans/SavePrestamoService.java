@@ -1,6 +1,7 @@
 package com.example.curso2024.services.loans;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,16 +22,7 @@ public class SavePrestamoService {
 
     // TODO Complejidad a la hora de definir la fecha de devolucion, usar servicio
     public Loan execute(Member socio, Copy libro, LocalDateTime localDate) {
-        int prestamoDias = 21;
-        
-        return loansRepository.save(Loan.builder()
-                .copy(libro)
-                .member(socio)
-                .startedAt(localDate)
-                .expiredAt(localDate.plusDays(prestamoDias))
-                .build());
-        // TODO Descomentar para calcular
-        // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        // return loansRepository.save(calcularPrestamoService.execute(socio, libro, localDate.format(formatter)));
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+        return loansRepository.save(calcularPrestamoService.execute(socio, libro, localDate.format(formatter)));
     }
 }

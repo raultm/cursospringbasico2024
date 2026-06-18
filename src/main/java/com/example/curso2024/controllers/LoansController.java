@@ -15,10 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.curso2024.dto.LoanCreate;
+import com.example.curso2024.models.Copy;
 import com.example.curso2024.models.Loan;
+import com.example.curso2024.models.Member;
 import com.example.curso2024.repositories.CopiesRepository;
 import com.example.curso2024.repositories.LoansRepository;
 import com.example.curso2024.repositories.MemberRepository;
+import com.example.curso2024.services.loans.SavePrestamoService;
 
 import io.swagger.v3.oas.annotations.Operation;
 
@@ -29,6 +32,7 @@ public class LoansController {
     @Autowired LoansRepository repository;
     @Autowired CopiesRepository copiesRepository;
     @Autowired MemberRepository memberRepository;
+    @Autowired SavePrestamoService savePrestamoService;
 
     @GetMapping @Operation(operationId = "listarPrestamos",summary = "Listado de Préstamos", tags = { "loans" })
     public List<Loan> listarPrestamos(){
@@ -37,14 +41,11 @@ public class LoansController {
 
     @PostMapping @Operation(operationId = "prestarCopia",summary = "Crear préstamo", tags = { "loans" })
     public Loan prestarCopia(@RequestBody LoanCreate loanCreate) { 
-        return repository.save(
-            Loan.builder()
-                .copy(copiesRepository.findById(loanCreate.getCopyId()).get())
-                .member(memberRepository.findById(loanCreate.getMemberId()).get())
-                .startedAt(LocalDateTime.now())
-                .expiredAt(LocalDateTime.now().plusDays(21))
-                .build()
-        );
+        Copy copy = copiesRepository.findById(loanCreate.getCopyId()).get();
+        Member member = memberRepository.findById(loanCreate.getMemberId()).get();
+        LocalDateTime time = LocalDateTime.now();
+
+        return savePrestamoService.execute(member, copy, time);
     }
 
     @DeleteMapping("/{id}") @Operation(operationId = "terminarPrestamo",summary = "Terminar préstamo", tags = { "loans" })
