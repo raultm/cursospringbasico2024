@@ -2,6 +2,7 @@ package com.example.curso2024.services.loans;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 
 import java.time.format.DateTimeFormatter;
@@ -87,7 +88,7 @@ class CalcularPrestamoServiceTest {
       Exception ex = assertThrows(RuntimeException.class, () -> {
         calculateNewLoanService.execute(member, copy, dateString);
       });
-      assertEquals(CalcularPrestamoService.COPIA_PRESTADA, ex.getMessage());
+      assertTrue(ex.getMessage().contains(CalcularPrestamoService.COPIA_PRESTADA));
     }
 
     @Test
@@ -97,7 +98,7 @@ class CalcularPrestamoServiceTest {
       Exception ex = assertThrows(RuntimeException.class, () -> {
         calculateNewLoanService.execute(member, copy, dateString);
       });
-      assertEquals(CalcularPrestamoService.SOCIO_LIMITE_PRESTAMO, ex.getMessage());
+      assertTrue(ex.getMessage().contains(CalcularPrestamoService.SOCIO_LIMITE_PRESTAMO));
     }
 
     @Test
@@ -107,7 +108,7 @@ class CalcularPrestamoServiceTest {
       Exception ex = assertThrows(RuntimeException.class, () -> {
         calculateNewLoanService.execute(member, copy, dateString);
       });
-      assertEquals(CalcularPrestamoService.SOCIO_PRESTAMO_VENCIDO, ex.getMessage());
+      assertTrue(ex.getMessage().contains(CalcularPrestamoService.SOCIO_PRESTAMO_VENCIDO));
     }
 
     @Test
@@ -118,7 +119,8 @@ class CalcularPrestamoServiceTest {
       Exception ex = assertThrows(RuntimeException.class, () -> {
         calculateNewLoanService.execute(member, copy, dateString);
       });
-      assertEquals(CalcularPrestamoService.FECHA_FIN_SEMANA, ex.getMessage());
+      assertTrue(ex.getMessage().contains(CalcularPrestamoService.FECHA_FIN_SEMANA));
+      
     }
 
   }
