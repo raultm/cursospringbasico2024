@@ -20,7 +20,7 @@ public class WebConfig {
 
     @Bean
     public LocaleResolver localeResolver() {
-        return new FixedLocaleResolver(Locale.CHINESE);
+        return new FixedLocaleResolver(Locale.GERMAN);
     }
 
 }
