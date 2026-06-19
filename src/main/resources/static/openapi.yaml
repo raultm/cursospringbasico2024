@@ -38,15 +38,25 @@ components:
   schemas:
     SocioRegistro:
       type: object
+      required:
+        - email
+        - nacimiento
       properties:
         nombre:
+          example: "Luis"
           type: string
         email:
+          minLength: 1
+          maxLength: 255
+          example: "correo@gmail.com"
           type: string
+          format: email
         perfil:
+          example: "estudiante"
           type: string
         nacimiento:
           type: string
+          format: date
     Socio:
       type: object
       properties:

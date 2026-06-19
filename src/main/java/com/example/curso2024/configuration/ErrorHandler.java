@@ -60,6 +60,14 @@ public class ErrorHandler {
                 HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ApiError> handleRuntimeException(RuntimeException ex){
+        return new ResponseEntity<>(
+                ApiError.builder().code(HttpStatus.BAD_REQUEST.value()).error(ex.getMessage()).build(),
+                HttpStatus.BAD_REQUEST);
+    }
+
+
     private String getRootCauseMessage(DataIntegrityViolationException ex) {
         Throwable cause = ex.getRootCause();
         if (cause == null) {

@@ -25,7 +25,7 @@ public class RegistrarSocioDelegate implements SociosApiDelegate {
                 .username(socioRegistro.getNombre())
                 .email(socioRegistro.getEmail())
                 .perfil(socioRegistro.getPerfil())
-                .birthDate(socioRegistro.getNacimiento() != null ? LocalDate.parse(socioRegistro.getNacimiento()) : null)
+                .birthDate(socioRegistro.getNacimiento())
                 .build();
 
         Member member = saveMemberService.execute(memberCreate);
